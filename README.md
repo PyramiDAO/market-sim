@@ -17,7 +17,7 @@ Here is a list of assumptions on which the sim is built.
   </ul>
 
 <h1>Summary</h1>
-Based on the assumptions above, if there is a constant flow of users swapping 4000$ total per day for a period of 30 days, we need: 4000$ * 30 days = 120,000$ in our treasury to sustain such volumes. Based on the curve plotted, we need a fee of approx 3% (and a collateral of 20%) to ensure such a business model is profitable for the treasury (based on full market cycle from 2017 till today).
+Based on the assumptions above, if there is a constant flow of users swapping 4000$ total per day for a period of 30 days, we need: 4000$ * 30 days = 120,000$ worth of assets in our treasury to sustain such volumes. BUT! based on the fee and collateral levels, there is a huge difference on the VAR (see below) and amount earned by the Treasury. 
 
 <h2>Some results</h2>
 
@@ -27,7 +27,7 @@ Based on the assumptions above, if there is a constant flow of users swapping 40
   <li>The computation shows the result of covarage (defined as the sum of fees perceived decreased by eventual use of funds to cover user's loss - ie. our net gain).</li>
 </ul>
 
-> RESULTS:
+> RESULTS: based on the entire period (2017 > 2022)
 <ul> 
 <li>If fee is 0.01 and collateral is 0.05 then VAR is -400695.24</li>
 <li>If fee is 0.01 and collateral is 0.05 then coverage is -400695.24</li>
