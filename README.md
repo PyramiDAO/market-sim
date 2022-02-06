@@ -55,13 +55,14 @@ Randomzed paramters
     <li>  20% collateral, 1% swap fee: 95% VaR = $34,249, 99% VaR = $12,085</li>
     <li>  10% collateral, 1% swap fee: 95% VaR = $15,538, 99% VaR = $6,456</li>
     <li>  7% collateral, 1% swap fee: 95% VaR = $9,356, 99% VaR = $610</li>
-    <li>  6% collateral, 1% swap fee: 95% VaR = $1,518, 99% VaR = -$2,654</li>
+    <li>  6% collateral, 1% swap fee: 95% VaR = $1,518, 99% VaR = ($2,654)</li>
     <li>  5% collateral, 1% swap fee: 95% VaR = ($5,580), 99% VaR = ($11,666)</li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
+    <li>During the Covid dip for ETH in 2020 (2020-02-01 to 2020-05-01)</li>
+    <li>  20% collateral, 1% swap fee: 95% VaR = $572, 99% VaR = $3.89</li>
+    <li>  10% collateral, 1% swap fee: 95% VaR = ($152,329), 99% VaR = ($162.720)</li>
+    <li>  5% collateral, 1% swap fee: 95% VaR = ($8,795), 99% VaR = ($13,853)</li>
+    <li>During the entirety of our historica data (2017-08 to 2022-02)</li>
+    <li>  10% collateral, 1% swap fee: 95% VaR = $730,611, 99% VaR = $213.433</li>
   </ul>
 
 How to interpret Value at Risk?
