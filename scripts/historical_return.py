@@ -45,5 +45,5 @@ props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
 ax.text(0.09, 0.8, avg_text, transform=ax.transAxes, fontsize=14,
         verticalalignment='top', bbox=props)
 
-plt.savefig('/Users/zokum/Documents/Workspace/market-sim/scripts/results/historical_1y_APR.png')
+plt.savefig('/Users/zokum/Documents/Workspace/market-sim/results/historical_1y_APR.png')
 plt.show()

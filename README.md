@@ -1,82 +1,78 @@
 # market-sim
-Market Simulation for liquidation and treasury P&amp;L
+Market Simulation for PyramiDAO protocol
+
+<h1> PyramiDAO </h1>
+What does PyramiDAO do?
+  <ul>
+    <li>Facilitating Total Return Swap (TRS) to let user get leveraged exposure to underlying assets, in exchange, we charge a fixed swap fee</li>
+    <li>PyramiDAO will have various Vaults, corresponding to various Strategies, i.e., underlying assets user wants leveraged exposure to</li>
+    <li>Profit Treasury vaults earn will be distributed to PyramiDAO token holders as a percent</li>
+  </ul>
 
 <h1>Assumptions</h1>
-Here is a list of assumptions on which the sim is built.
+Here is a list of assumptions on which the sim is built
   <ul>
     <li>The user enters a swap with the Treasury (hence the treasury assets)</li>
-    <li>The contract is fixed for 30 days</li>
-    <li>There is no liquidation done during the 30 days period (this solves some issues, I guess), but the liquidation occurs at the end of the 30 in proportion of the assets effectively lost at the closing.</li>
-    <li>This involves that the % collateral might not be sufficient to cover users loss</li>
+    <li>Treasury always approves the TRS once user requests</li>
+    <li>User has to put down a certain percent collateral</li>
+    <li>PyramiDAO utlizes Chainlink Oracle to check for asset prices periodically, if price of assets falls below the collateral, then user gets force liquidated</li>
+    <li>User can choose to enter and exit TRS contract at will</li>
+    <li>This simulation currently simulates for only one Vault -- the strategy to invest in ETH</li>
   </ul>
 
-<h1>How to use</h1>
+<h1>How Simulation was Conducted</h1>
+Basic set up
   <ul>
-    <li>Install: numpy / pandas / matplotlib / ssl</li>
-    <li>Run the simulate_market.py script</li>
+    <li>pyramiDAO.py is the entry point for simulation</li>
+    <li>N_SIM defines the number of simulations run for a set of parameters (more details on paramters below), for our result, we simulate for at least 500 iterations</li>
+    <li>At the beginning of the simulation, a random seed is set</li>
   </ul>
 
-<h1>Summary</h1>
-Based on the assumptions above, if there is a constant flow of users swapping 4000$ total per day for a period of 30 days, we need: 4000$ * 30 days = 120,000$ worth of assets in our treasury to sustain such volumes. BUT! based on the fee and collateral levels, there is a huge difference on the VAR (see below) and amount earned by the Treasury. 
+<h1>Parameters for the Simulation</h1>
+Parameters for turning 
+  <ul>
+      <li>PERIOD_START, PERIOD_END: these two parameters define the historical period the simulation is run upon. This helps us simulate for especially distresed historical period </li>
+      <li>  For the result below, we simulated for (1)2021 summer dip: 2021-05-07 to 2021-07-18 (2)2020 covid dip: 2020-02-01 to 2020-04-01 and (3)Normal: 2017-08 to 2022-02</li>
+      <li>COLLATERAL_PERCENTAGE: required collateral (in percent) of the exposure user wants to enter TRS on</li>
+      <li>  The goal is to have enough collateral but also allow users to have as much leverage as possible</li>
+      <li>SWAP_FEE: a fixed rate user pays PyramiDAO in this TRS, period is 30 days</li>
+      <li>LIQUIDATE_PERIOD: the period in which PyramiDAO checks the current price of asset against the collateral, and trigger force liquidation if price drops below what collateral can cover and end the TRS</li>
+      <li>  For simulation we picked 24 hours, i.e. checking the asset price every day</li>
+  </ul>
+Randomzed paramters
+  <ul>
+    <li>NUM_USERS: random integer from uniform distribution between 100 and 20,000</li>
+    <li>EXPOSURE: random floating number from exponential distribution, with floor of $100.0</li>
+    <li>rand_exit, rand_entry: utilizing a uniform distribution to simulate user randomly entering and exiting swap during the given period we are simulating</li>
+  </ul>
 
-<h2>Some results</h2>
 
-<ul>
-  <li>The code has run for a combination of collateral (example 0.05 = 5% collateral) and fee (example 0.01 = 1% on the exposure).</li>
-  <li>The computation shows the result of VAR (defined as the maximum amount that our treasury needs to cover due to user's loss).</li>
-  <li>The computation shows the result of covarage (defined as the sum of fees perceived decreased by eventual use of funds to cover user's loss - ie. our net gain).</li>
-</ul>
+<h1>Results</h1>
+  <ul>
+    <li>Our result shows that during various market conditions, give the mechanism we described above (especially period Oracle checking and force liquidation, combined with required collateral), PyramiDAO Treasury will be able to make consistent profit, while providing users with very effective leverage </li>
+    <li>LIQUIDATE_PERIOD is very important, when the market is very volatile, we must increase the frequency PyramiDAO is checking Chainlink Oracle price against collateral</li>
+    <li>During the summer dip for ETH in 2021 (2021-05-07 to 2021-07-18)</li>
+    <li>  20% collateral, 1% swap fee: 95% VaR = $34,249, 99% VaR = $12,085</li>
+    <li>  10% collateral, 1% swap fee: 95% VaR = $15,538, 99% VaR = $6,456</li>
+    <li>  7% collateral, 1% swap fee: 95% VaR = $9,356, 99% VaR = $610</li>
+    <li>  6% collateral, 1% swap fee: 95% VaR = $1,518, 99% VaR = -$2,654</li>
+    <li>  5% collateral, 1% swap fee: 95% VaR = ($5,580), 99% VaR = ($11,666)</li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+  </ul>
 
-> RESULTS: based on the entire period (2017 > 2022)
-<ul> 
-<li>If fee is 0.01 and collateral is 0.05 then VAR is -400695.24</li>
-<li>If fee is 0.01 and collateral is 0.05 then coverage is -400695.24</li>
-<li>If fee is 0.02 and collateral is 0.05 then VAR is -336655.24</li>
-<li>If fee is 0.02 and collateral is 0.05 then coverage is -336655.24</li>
-<li>If fee is 0.03 and collateral is 0.05 then VAR is -272615.24</li>
-<li>If fee is 0.03 and collateral is 0.05 then coverage is -272615.24</li>
-<li>If fee is 0.04 and collateral is 0.05 then VAR is -226651.67</li>
-<li>If fee is 0.04 and collateral is 0.05 then coverage is -208575.24</li>
-<li>If fee is 0.05 and collateral is 0.05 then VAR is -189131.67</li>
-<li>If fee is 0.05 and collateral is 0.05 then coverage is -144535.24</li>
-<li>If fee is 0.01 and collateral is 0.1 then VAR is -282908.46</li>
-<li>If fee is 0.01 and collateral is 0.1 then coverage is -282908.46</li>
-<li>If fee is 0.02 and collateral is 0.1 then VAR is -218868.46</li>
-<li>If fee is 0.02 and collateral is 0.1 then coverage is -218868.46</li>
-<li>If fee is 0.03 and collateral is 0.1 then VAR is -177287.11</li>
-<li>If fee is 0.03 and collateral is 0.1 then coverage is -154828.46</li>
-<li>If fee is 0.04 and collateral is 0.1 then VAR is -139767.11</li>
-<li>If fee is 0.04 and collateral is 0.1 then coverage is -90788.46</li>
-<li>If fee is 0.05 and collateral is 0.1 then VAR is -102247.11</li>
-<li>If fee is 0.05 and collateral is 0.1 then coverage is -26748.46</li>
-<li>If fee is 0.01 and collateral is 0.15 then VAR is -184452.54</li>
-<li>If fee is 0.01 and collateral is 0.15 then coverage is -184452.54</li>
-<li>If fee is 0.02 and collateral is 0.15 then VAR is -138540.28</li>
-<li>If fee is 0.02 and collateral is 0.15 then coverage is -120412.54</li>
-<li>If fee is 0.03 and collateral is 0.15 then VAR is -101056.23</li>
-<li>If fee is 0.03 and collateral is 0.15 then coverage is -56372.54</li>
-<li>If fee is 0.04 and collateral is 0.15 then VAR is -72168.99</li>
-<li>If fee is 0.04 and collateral is 0.15 then coverage is 7667.46</li>
-<li>If fee is 0.05 and collateral is 0.15 then VAR is -53677.73</li>
-<li>If fee is 0.05 and collateral is 0.15 then coverage is 71707.46</li>
-<li>If fee is 0.01 and collateral is 0.2 then VAR is -114237.66</li>
-<li>If fee is 0.01 and collateral is 0.2 then coverage is -108287.41</li>
-<li>If fee is 0.02 and collateral is 0.2 then VAR is -76847.66</li>
-<li>If fee is 0.02 and collateral is 0.2 then coverage is -44247.41</li>
-<li>If fee is 0.03 and collateral is 0.2 then VAR is -51770.28</li>
-<li>If fee is 0.03 and collateral is 0.2 then coverage is 19792.59</li>
-<li>If fee is 0.04 and collateral is 0.2 then VAR is -33348.44</li>
-<li>If fee is 0.04 and collateral is 0.2 then coverage is 83832.59</li>
-<li>If fee is 0.05 and collateral is 0.2 then VAR is -14928.44</li>
-<li>If fee is 0.05 and collateral is 0.2 then coverage is 147872.59</li>
-<li>If fee is 0.01 and collateral is 0.25 then VAR is -68246.33</li>
-<li>If fee is 0.01 and collateral is 0.25 then coverage is -53533.48</li>
-<li>If fee is 0.02 and collateral is 0.25 then VAR is -39628.33</li>
-<li>If fee is 0.02 and collateral is 0.25 then coverage is 10506.52</li>
-<li>If fee is 0.03 and collateral is 0.25 then VAR is -21221.66</li>
-<li>If fee is 0.03 and collateral is 0.25 then coverage is 74546.52</li>
-<li>If fee is 0.04 and collateral is 0.25 then VAR is -2821.66</li>
-<li>If fee is 0.04 and collateral is 0.25 then coverage is 138586.52</li>
-<li>If fee is 0.05 and collateral is 0.25 then VAR is -305.33</li>
-<li>If fee is 0.05 and collateral is 0.25 then coverage is 202626.52</li>
-</ul>
+How to interpret Value at Risk?
+  <ul>
+    <li>VaR is the maximum amount at risk to be lost (1) over a period of time (2) at a particular level of confidence</li>
+    <li>For example, if during the summer dip for ETH in 2021 (2021-05-07 to 2021-07-18), the 95% VaR is -$5,580, then that means, with 95 probability, PyramiDAO will not lose more than $5,580 by facilitating TRS during the given period
+</li>
+    <li>As we can see from results above, most of the time our simulation actually makes a profit still, with reasonable </li>
+
+  </ul>
+
+    
+        
+        
